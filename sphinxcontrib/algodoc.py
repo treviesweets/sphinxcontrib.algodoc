@@ -6,8 +6,8 @@
 import sys
 import inspect
 from docutils import nodes
-from docutils.parsers.rst import directives
-from docutils.parsers.rst import Directive
+from docutils.parsers.rst import directives, Directive, Parser
+
 
 #class algodoc_node(nodes.Structural, nodes.Element):
 #    pass
@@ -18,8 +18,8 @@ class AlgoDocDirective(Directive):
     required_arguments = 1
     optional_arguments = 0
     
-    # example option spec
-    option_spec = {'function':directives.unchanged}
+    # option spec
+    option_spec = {'title':directives.unchanged}
     
     final_argument_whitespace = True
     has_content = True
@@ -51,7 +51,7 @@ class AlgoDocDirective(Directive):
         
         else:
             return None
-           
+                       
         # this bit is inspired by autodoc...
         # import the module
         
@@ -72,53 +72,41 @@ class AlgoDocDirective(Directive):
         # iterate through the resulting list and find the function
         for m in members:
             if m[0] == self.function_name:
-                fct = m[1]
+                self.function = m[1]
              
         # load the source code for that module
-        sourcelines = inspect.getsourcelines(fct)[0]
+        sourcelines = inspect.getsourcelines(self.function)[0]
        
         # POSSIBLY SHOULD BE USING NODES HERE
         
-        comments = [] # recieves all the comments
-        comment = [] # recieves individual comments
-
+        
+        idb = nodes.make_id(fct)
+        node = nodes.section(ids=[idb])
+        node += nodes.title(text = options['title'])
+        node += nodes.paragraph(text = 'Function: ' + fct)
+                
+        l1 = True
+        
         # iterate through the source and find the comments
         for s in sourcelines:
             # all lines with comments are indicated with a '#:'
-            if '#:' in s:
-                print s
-                print type(s)
+            if '#:' in s:                
                 
                 # comments should end with this
                 if '#:#' in s:
-                    comments.append(comment)
-                    comment = []
+                    l1 = True
+                    
                 else:
-                    comment.append(s.split('#:')[-1])
-         
-        print comments
-        
-        
-        # the html document
-        # print self.state.document
-        # print inspect.getsourcelines(function)
-        # print env.temp_data.get(function)
-        
-        # print app
-        # print what
-        # print obj
-        
-        node = nodes.paragraph()
-        node += nodes.section()
+                    text = s.split('#:')[-1]
+
+                    if l1:
+                        node += nodes.strong(text = text)
+                        l1 = False
+                    else:
+                        node += nodes.paragraph(text = text)
         
         return [ node ]
 
-def algodoc_proc_function(app, what, name, obj, options, lines):
-    print 'autodoc hook'
-    print app
-    print what
-    print obj
-    
 
 def setup(app):
     #app.add_node(algodoc_node)
