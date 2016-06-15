@@ -19,7 +19,9 @@ class AlgoDocDirective(Directive):
     optional_arguments = 0
     
     # option spec
-    option_spec = {'title':directives.unchanged}
+    option_spec = {'title':directives.unchanged,
+                   'comment':directives.unchanged
+                  }
     
     final_argument_whitespace = True
     has_content = True
@@ -84,6 +86,9 @@ class AlgoDocDirective(Directive):
         node = nodes.section(ids=[idb])
         node += nodes.title(text = options['title'])
         node += nodes.paragraph(text = 'Function: ' + fct)
+        
+        if 'comment' in options.keys(): 
+            node += nodes.paragraph(text = options['comment'])
                 
         l1 = True
         
@@ -103,8 +108,11 @@ class AlgoDocDirective(Directive):
                         node += nodes.strong(text = text)
                         l1 = False
                     else:
-                        node += nodes.paragraph(text = text)
-        
+                        if len(text) > 1:
+			    node += nodes.paragraph(text = '  *  ' + text)
+                        else:
+                            node += nodes.paragraph(text = text)        
+
         return [ node ]
 
 

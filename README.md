@@ -1,6 +1,6 @@
-*********************
+=====================
 sphinxcontrib.algodoc
-*********************
+=====================
 
 Sphinx extension for easy documentation of algorithms written in python.
 Knocked up to help document a largeish piece of code... you could call it a Beta version!
@@ -10,22 +10,23 @@ Knocked up to help document a largeish piece of code... you could call it a Beta
     :depth: 1
     :backlinks: none
     
-=============
+------------
 Installation
-=============
+--------------
 
 * Clone the repo
 * Copy algodoc.py to YOURPYTHONDIR/site-packages/sphinxcontrib/
 
-=====
+--------
 Usage
-=====
+--------
 
 -----------------
 In your rst file:
------------------
+------------------
 
 .. algodoc:: modulename.functionname
+
    :title: my algorithm
    
 OR
@@ -34,9 +35,10 @@ OR
 
 --------------------
 In your python code:
---------------------
+-----------------------
 
-def functionname(bar):
+    def functionname(bar):
+    
     """ docstring
     """
     
@@ -64,12 +66,17 @@ Output:
 -------
 
 **my algorithm**
+
 Function: modulename.functionname
 
 *Step 1: Set x = 0*
+
 1a. Add 100 to x
+
 *Step 2: Set y = 1000*
+
 2a. Divde y by 10
+
 *Step 3: Add Them!*
 
 
